@@ -1,0 +1,86 @@
+body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #fcd9f5;
+            color: #a46a9a;
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Efeito de borda pixelada */
+        .pixel-border {
+            border: 8px solid #a46a9a;
+            border-image-slice: 4;
+            border-image-width: 4px;
+            border-image-repeat: stretch;
+            border-image-source: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path d="M0 0h12v12H0z" fill="%23e6b5d9"/><path d="M4 0h4v4H4zM0 4h4v4H0zM8 4h4v4H8zM4 8h4v4H4z" fill="%23a46a9a"/></svg>');
+            position: relative;
+            background-color: #e6b5d9;
+            padding: 16px;
+        }
+        
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 8px;
+            width: 100%;
+            height: 100%;
+            background-color: #a46a9a;
+        }
+
+        .cell {
+            background-color: #f4c8e7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            aspect-ratio: 1 / 1;
+        }
+
+        .cell:hover:not(.occupied) {
+            background-color: #e6b5d9;
+        }
+
+        .cell.occupied {
+            cursor: not-allowed;
+        }
+
+        .cell .game-icon {
+            width: 70%;
+            height: 70%;
+            image-rendering: pixelated;
+        }
+        
+        .score-icon {
+            image-rendering: pixelated;
+        }
+        
+        /* Estilo para a mensagem de status */
+        .status-message {
+            text-shadow: 2px 2px #e6b5d9;
+        }
+
+        /* Estilo para o botão */
+        .restart-button {
+            background-color: #a46a9a;
+            color: white;
+            padding: 12px 24px;
+            border: 4px solid #7c4c74;
+            box-shadow: 4px 4px 0 #7c4c74;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+        }
+        .restart-button:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 #7c4c74;
+        }
+        .restart-button:active {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+
+        /* Esconde a mensagem de vitória inicialmente */
+        #winner-modal {
+            transition: opacity 0.3s ease-in-out;
+        }
