@@ -28,6 +28,11 @@ const winningConditions = [
 
 //--- FUNÇÕES DO JOGO ---
 
+// Verifica se o dispositivo é móvel
+function isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+}
+
 // CRIA O TABULEIRO INICIAL
 function createBoard(){
     boardElement.innerHTML = '';
@@ -35,21 +40,41 @@ function createBoard(){
         const cell = document.createElement('div');
         cell.classList.add('cell');
         cell.dataset.index = i;
-        cell.addEventListener('click',  handleCellClick);
+        
+        // Adiciona eventos apropriados baseados no tipo de dispositivo
+        if (isMobileDevice()) {
+            cell.addEventListener('touchstart', handleCellClick);
+            // Previne o zoom em dispositivos móveis ao dar dois toques
+            cell.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+        } else {
+            cell.addEventListener('click', handleCellClick);
+        }
+        
         boardElement.appendChild(cell);
     }
 }
 
 // Lida com o clique na célula
 function handleCellClick(event){
-    const clickedCell = event.target;
-    const clickedCellIndex = parseInt(clickedCell.dataset.index);
+    // Previne comportamento padrão para eventos de toque
+    if (event.type === 'touchstart') {
+        event.preventDefault();
+    }
+    
+    // Para eventos de toque, usa o primeiro toque
+    const clickedCell = event.type === 'touchstart' ? event.touches[0].target : event.target;
+    
+    // Se o clique foi na imagem dentro da célula, sobe para o elemento pai
+    const cell = clickedCell.tagName === 'IMG' ? clickedCell.parentElement : clickedCell;
+    const clickedCellIndex = parseInt(cell.dataset.index);
 
     if(boardState[clickedCellIndex] !== null || !gameActive || currentPlayer !== PLAYER){
         return;
     }
 
-    placeMark(clickedCell, clickedCellIndex, PLAYER);
+    placeMark(cell, clickedCellIndex, PLAYER);
 
     if(checkWin(PLAYER)){
         endGame(false, PLAYER);
@@ -256,15 +281,31 @@ function resetScores() {
 
 // --- Inicialização do Jogo ---
 
-restartButton.addEventListener('click', restartGame);
-playAgainButton.addEventListener('click', restartGame);
-resetScoresButton.addEventListener('click', resetScores);
-// Adicionar um ouvinte de evento de tecla para a combinação Shift+R para resetar pontuações
-document.addEventListener('keydown', function(event) {
-    if (event.shiftKey && event.key === 'R') {
+// Adiciona eventos adequados para cada tipo de dispositivo
+if (isMobileDevice()) {
+    restartButton.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        restartGame();
+    });
+    playAgainButton.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        restartGame();
+    });
+    resetScoresButton.addEventListener('touchstart', function(e) {
+        e.preventDefault();
         resetScores();
-    }
-});
+    });
+} else {
+    restartButton.addEventListener('click', restartGame);
+    playAgainButton.addEventListener('click', restartGame);
+    resetScoresButton.addEventListener('click', resetScores);
+    // Adicionar um ouvinte de evento de tecla para a combinação Shift+R para resetar pontuações
+    document.addEventListener('keydown', function(event) {
+        if (event.shiftKey && event.key === 'R') {
+            resetScores();
+        }
+    });
+}
 
 // Carrega as pontuações ao iniciar o jogo
 loadScores();

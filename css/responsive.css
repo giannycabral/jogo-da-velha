@@ -1,0 +1,64 @@
+/* Meta viewport para responsive desing */
+@viewport {
+  width: device-width;
+  zoom: 1.0;
+  user-zoom: fixed;
+}
+
+/* Ajustes para visualização em orientação específica */
+@media screen and (orientation: portrait) {
+  .game-board {
+    width: 90vw;
+    max-width: 350px;
+    height: auto;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  body {
+    padding: 5px !important;
+  }
+  
+  h1.status-message {
+    font-size: 1rem !important;
+    margin-bottom: 0.3rem !important;
+  }
+  
+  .game-board {
+    max-height: 70vh;
+    width: auto;
+  }
+  
+  .mt-4 {
+    margin-top: 0.5rem !important;
+  }
+  
+  #status {
+    margin-bottom: 0.3rem !important;
+  }
+  
+  .restart-button {
+    padding: 5px 12px !important;
+    font-size: 0.7rem !important;
+  }
+  
+  .score-icon {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
+
+/* Evitar seleção de texto em dispositivos móveis */
+.cell, .restart-button, h1, p, #winner-message {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Desativa o highlight azul em toques móveis */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
