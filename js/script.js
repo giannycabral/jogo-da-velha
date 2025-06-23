@@ -17,8 +17,8 @@ let playerScore = 0;
 let computerScore = 0;
 
 // Referências para as imagens dos jogadores
-const catImage = '<img src="images/cat.png" alt="Gato" class="game-icon">';
-const rabbitImage = '<img src="images/rabbit.png" alt="Coelho" class="game-icon">';
+const catImage = '<img src="./images/cat.gif" alt="Gato" class="game-icon">';
+const rabbitImage = '<img src="./images/rabbit.gif" alt="Coelho" class="game-icon">';
 
          const winningConditions = [
             [0, 1, 2], [3, 4, 5], [6, 7, 8], // Linhas
