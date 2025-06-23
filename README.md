@@ -1,12 +1,12 @@
-# 🐱 Jogo da Velha: Gato vs Coelho 🐰
-
 <div style="text-align: center; margin-bottom: 20px;">
   <img src="./images/favicon.svg" width="80px" alt="Ícone do Jogo da Velha">
   <h1>Jogo da Velha: Gato vs Coelho</h1>
   <img src="./images/cat.gif" width="80px" alt="Gato">
   <span style="margin: 0 20px; font-size: 24px;">VS</span>
   <img src="./images/rabbit.gif" width="80px" alt="Coelho">
- ## 🛠️ Estrutura do Projeto
+ 
+
+## 🛠️ Estrutura do Projeto
 
 O projeto está organizado em uma estrutura clara e modular:
 
