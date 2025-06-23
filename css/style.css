@@ -127,6 +127,68 @@ body {
             border: 2px solid #ff65c5;
         }
         
+        .cell:hover:not(.occupied)::before {
+            opacity: 1;
+            animation: twinkle 1s infinite alternate;
+        }
+        
+        .cell:hover:not(.occupied)::after {
+            opacity: 0.5;
+            font-size: 24px;
+            transform: rotate(0deg);
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .cell.occupied {
+            cursor: not-allowed;
+        }
+
+        .cell .game-icon {
+            width: 70%;
+            height: 70%;
+            image-rendering: pixelated;
+            object-fit: contain;
+        }
+        
+        /* Torna as imagens do placar responsivas */
+        .score-icon {
+            image-rendering: pixelated;
+            max-width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 480px) {
+            .score-icon {
+                width: 50px !important;
+                height: 50px !important;
+            }
+        }
+        
+        /* Estilo para a mensagem de status kawaii */
+        .status-message {
+            text-shadow: 2px 2px #ffb8e6;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1.status-message {
+            color: #ff65c5;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1.status-message::after {
+            content: '♡';
+            font-size: 0.5em;
+            position: absolute;
+            top: -0.5em;
+            right: -0.5em;
+            color: #ff8ad8;
+            animation: pulse 1.5s infinite alternate;
         }
         
         @keyframes pulse {
@@ -152,6 +214,30 @@ body {
         
         #status::after {
             right: -1.5em;
+        }
+
+        /* Ajusta o layout do sistema de pontuação */
+        .flex {
+            display: flex;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        @media (max-width: 480px) {
+            #status::before, #status::after {
+                display: none;
+            }
+            
+            .flex.justify-center.gap-4 {
+                gap: 10px !important;
+            }
+            
+            #status {
+                font-size: 1rem !important;
+                margin-bottom: 10px !important;
+            }
         }
 
         /* Estilo para o botão kawaii */
@@ -189,12 +275,28 @@ body {
             box-shadow: 0 2px 0 #ff45b5, 0 4px 6px rgba(255, 138, 216, 0.3);
         }
 
-        /* Modal de vitória kawaii */
+        /* Modal de vitória mais responsivo */
         #winner-modal {
             transition: all 0.5s ease-in-out;
             z-index: 1000;
         }
-        
+
+        #winner-modal .pixel-border {
+            max-width: 90vw;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 480px) {
+            #winner-message {
+                font-size: 1.2rem !important;
+            }
+            
+            .trophy {
+                transform: scale(0.8);
+            }
+        }
+
         .trophy {
             animation: bounce 2s infinite ease-in-out;
             transform-origin: center bottom;
