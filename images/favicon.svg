@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffb8e6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff65c5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="28" height="28" rx="6" fill="url(#grad)" stroke="#ffffff" stroke-width="2"/>
+  <line x1="8" y1="8" x2="24" y2="8" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <line x1="8" y1="16" x2="24" y2="16" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <line x1="8" y1="24" x2="24" y2="24" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <line x1="8" y1="8" x2="8" y2="24" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <line x1="16" y1="8" x2="16" y2="24" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <line x1="24" y1="8" x2="24" y2="24" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="12" cy="12" r="2" fill="#ffffff"/>
+  <circle cx="20" cy="20" r="2" fill="#ffffff"/>
+</svg>

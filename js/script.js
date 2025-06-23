@@ -20,207 +20,252 @@ let computerScore = 0;
 const catImage = '<img src="./images/cat.gif" alt="Gato" class="game-icon">';
 const rabbitImage = '<img src="./images/rabbit.gif" alt="Coelho" class="game-icon">';
 
-         const winningConditions = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Linhas
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Colunas
-            [0, 4, 8], [2, 4, 6]  // Diagonais
-        ];
+const winningConditions = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Linhas
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Colunas
+    [0, 4, 8], [2, 4, 6]  // Diagonais
+];
 
-        //--- FUNÇÕES DO JOGO ---
+//--- FUNÇÕES DO JOGO ---
 
-        // CRIA O TABULEIRO INICIAL
-        function createBoard(){
-            boardElement.innerHTML = '';
-            for (let i = 0; i < 9; i++){
-                const cell = document.createElement('div');
-                cell.classList.add('cell');
-                cell.dataset.index = i;
-                cell.addEventListener('click',  handleCellClick);
-                boardElement.appendChild(cell);
-            }
-        }
+// CRIA O TABULEIRO INICIAL
+function createBoard(){
+    boardElement.innerHTML = '';
+    for (let i = 0; i < 9; i++){
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.dataset.index = i;
+        cell.addEventListener('click',  handleCellClick);
+        boardElement.appendChild(cell);
+    }
+}
 
-        // Lida com o clique na célula
-        function handleCellClick(event){
-            const clickedCell = event.target;
-            const clickedCellIndex = parseInt(clickedCell.dataset.index);
+// Lida com o clique na célula
+function handleCellClick(event){
+    const clickedCell = event.target;
+    const clickedCellIndex = parseInt(clickedCell.dataset.index);
 
-            if(boardState[clickedCellIndex] !== null || !gameActive || currentPlayer !== PLAYER){
-                return;
-            }
+    if(boardState[clickedCellIndex] !== null || !gameActive || currentPlayer !== PLAYER){
+        return;
+    }
 
-            placeMark(clickedCell, clickedCellIndex, PLAYER);
+    placeMark(clickedCell, clickedCellIndex, PLAYER);
 
-            if(checkWin(PLAYER)){
-                endGame(false, PLAYER);
-            } else if (isDraw()){
-                endGame(true);
+    if(checkWin(PLAYER)){
+        endGame(false, PLAYER);
+    } else if (isDraw()){
+        endGame(true);
+    } else {
+        swapPlayerAndPlayComputer();
+    }
+}
+
+// Coloca a marca (gato ou coelho) na célula
+function placeMark(cell, index, player){
+    boardState[index] = player;
+    cell.innerHTML = player === PLAYER ? catImage : rabbitImage;
+    cell.classList.add('occupied');
+}
+
+// Troca o jogador e aciona a jogada do computador
+function swapPlayerAndPlayComputer(){
+    currentPlayer = COMPUTER;
+    statusElement.textContent = 'Vez do Coelho...';
+    // Adiciona u  pequeno delay para a jogada do computador parecer mas natural
+    setTimeout(computerMove, 800);
+}
+
+// Lógica da jogada do computador
+function computerMove() {
+    if (!gameActive) return;
+
+    // 1. Tenta vencer
+    let move = findBestMove(COMPUTER);
+    if (move !== -1) {
+        const cell = boardElement.children[move];
+        placeMark(cell, move, COMPUTER);
+    } else {
+        // 2. Tenta bloquear o jogador
+        move = findBestMove(PLAYER);
+        if (move !== -1) {
+            const cell = boardElement.children[move];
+            placeMark(cell, move, COMPUTER);
+        } else {
+            // 3. Joga em um canto ou centro aleatório se disponível
+            const emptyCells = boardState.map((val, idx) => val === null ? idx : null).filter(val => val !== null);
+            const cornersAndCenter = [0, 2, 6, 8, 4].filter(idx => emptyCells.includes(idx));
+            if(cornersAndCenter.length > 0) {
+                const randomIndex = Math.floor(Math.random() * cornersAndCenter.length);
+                move = cornersAndCenter[randomIndex];
             } else {
-                swapPlayerAndPlayComputer();
+                // 4. Joga em qualquer lugar aleatório
+                const randomIndex = Math.floor(Math.random() * emptyCells.length);
+                move = emptyCells[randomIndex];
             }
+            const cell = boardElement.children[move];
+            placeMark(cell, move, COMPUTER);
         }
+    }
 
-        // Coloca a marca (gato ou coelho) na célula
-        function placeMark(cell, index, player){
-            boardState[index] = player;
-            cell.innerHTML = player === PLAYER ? catImage : rabbitImage;
-            cell.classList.add('occupied');
-        }
+    if (checkWin(COMPUTER)) {
+        endGame(false, COMPUTER);
+    } else if (isDraw()) {
+        endGame(true);
+    } else {
+        currentPlayer = PLAYER;
+        statusElement.textContent = 'Sua vez!';
+    }
+}
 
-        // Troca o jogador e aciona a jogada do computador
-        function swapPlayerAndPlayComputer(){
-            currentPlayer = COMPUTER;
-            statusElement.textContent = 'Vez do Coelho...';
-            // Adiciona u  pequeno delay para a jogada do computador parecer mas natural
-            setTimeout(computerMove, 800);
-        }
+// Encontra o melhor movimento (para vencer ou bloquear)
+function findBestMove(player) {
+    for (const condition of winningConditions) {
+        const [a, b, c] = condition;
+        // Verifica se duas células são do jogador e uma está vazia
+        if (boardState[a] === player && boardState[b] === player && boardState[c] === null) return c;
+        if (boardState[a] === player && boardState[c] === player && boardState[b] === null) return b;
+        if (boardState[b] === player && boardState[c] === player && boardState[a] === null) return a;
+    }
+    return -1; // Nenhum movimento encontrado
+}
 
-        // Lógica da jogada do computador
-        function computerMove() {
-            if (!gameActive) return;
+// Verifica se há um vencedor
+function checkWin(player) {
+    return winningConditions.some(condition => {
+        return condition.every(index => boardState[index] === player);
+    });
+}
 
-            // 1. Tenta vencer
-            let move = findBestMove(COMPUTER);
-            if (move !== -1) {
-                const cell = boardElement.children[move];
-                placeMark(cell, move, COMPUTER);
-            } else {
-                // 2. Tenta bloquear o jogador
-                move = findBestMove(PLAYER);
-                if (move !== -1) {
-                    const cell = boardElement.children[move];
-                    placeMark(cell, move, COMPUTER);
-                } else {
-                    // 3. Joga em um canto ou centro aleatório se disponível
-                    const emptyCells = boardState.map((val, idx) => val === null ? idx : null).filter(val => val !== null);
-                    const cornersAndCenter = [0, 2, 6, 8, 4].filter(idx => emptyCells.includes(idx));
-                    if(cornersAndCenter.length > 0) {
-                        const randomIndex = Math.floor(Math.random() * cornersAndCenter.length);
-                        move = cornersAndCenter[randomIndex];
-                    } else {
-                        // 4. Joga em qualquer lugar aleatório
-                        const randomIndex = Math.floor(Math.random() * emptyCells.length);
-                        move = emptyCells[randomIndex];
-                    }
-                    const cell = boardElement.children[move];
-                    placeMark(cell, move, COMPUTER);
-                }
-            }
+// Verifica se o jogo empatou
+function isDraw() {
+    return boardState.every(cell => cell !== null);
+}
 
-            if (checkWin(COMPUTER)) {
-                endGame(false, COMPUTER);
-            } else if (isDraw()) {
-                endGame(true);
-            } else {
-                currentPlayer = PLAYER;
-                statusElement.textContent = 'Sua vez!';
-            }
-        }
+// Cria confetti para celebração
+function createConfetti() {
+    const confettiContainer = document.getElementById('confetti-container');
+    confettiContainer.innerHTML = '';
+    
+    const colors = ['#ff65c5', '#ff8ad8', '#ffb8e6', '#fcd9f5', '#a46a9a', '#ff9cd9'];
+    
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.setProperty('--color', colors[Math.floor(Math.random() * colors.length)]);
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.top = -10 + 'px';
+        confetti.style.width = Math.random() * 8 + 5 + 'px';
+        confetti.style.height = Math.random() * 8 + 10 + 'px';
+        confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+        confetti.style.animation = 'confetti-fall ' + (Math.random() * 3 + 2) + 's linear forwards';
+        
+        confettiContainer.appendChild(confetti);
+    }
+}
 
-        // Encontra o melhor movimento (para vencer ou bloquear)
-        function findBestMove(player) {
-            for (const condition of winningConditions) {
-                const [a, b, c] = condition;
-                // Verifica se duas células são do jogador e uma está vazia
-                if (boardState[a] === player && boardState[b] === player && boardState[c] === null) return c;
-                if (boardState[a] === player && boardState[c] === player && boardState[b] === null) return b;
-                if (boardState[b] === player && boardState[c] === player && boardState[a] === null) return a;
-            }
-            return -1; // Nenhum movimento encontrado
-        }
+// Adiciona estrelas brilhantes ao redor
+function createStars() {
+    const starsContainer = document.querySelector('.stars-container');
+    starsContainer.innerHTML = '';
+    
+    for (let i = 0; i < 20; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        
+        starsContainer.appendChild(star);
+    }
+}
 
-        // Verifica se há um vencedor
-        function checkWin(player) {
-            return winningConditions.some(condition => {
-                return condition.every(index => boardState[index] === player);
-            });
-        }
+// Finaliza o jogo
+function endGame(draw, winner) {
+    gameActive = false;
+    statusElement.textContent = 'Fim de Jogo!';
+    if (draw) {
+        winnerMessageElement.textContent = 'Deu Velha!';
+    } else {
+        winnerMessageElement.innerHTML = `${winner === PLAYER ? catImage : rabbitImage} <span class="ml-4">Venceu!</span>`;
+        // Ajuste para alinhar imagem e texto
+        winnerMessageElement.classList.add('flex', 'items-center', 'justify-center');
+        winnerMessageElement.querySelector('img').style.width = '50px';
+        winnerMessageElement.querySelector('img').style.height = '50px';
 
-        // Verifica se o jogo empatou
-        function isDraw() {
-            return boardState.every(cell => cell !== null);
-        }
-
-        // Finaliza o jogo
-        function endGame(draw, winner) {
-            gameActive = false;
-            statusElement.textContent = 'Fim de Jogo!';
-            if (draw) {
-                winnerMessageElement.textContent = 'Deu Velha!';
-            } else {
-                winnerMessageElement.innerHTML = `${winner === PLAYER ? catImage : rabbitImage} <span class="ml-4">Venceu!</span>`;
-                // Ajuste para alinhar imagem e texto
-                winnerMessageElement.classList.add('flex', 'items-center', 'justify-center');
-                winnerMessageElement.querySelector('img').style.width = '50px';
-                winnerMessageElement.querySelector('img').style.height = '50px';
-
-                // Atualiza a pontuação
-                if (winner === PLAYER) {
-                    playerScore++;
-                    playerScoreElement.textContent = playerScore;
-                } else {
-                    computerScore++;
-                    computerScoreElement.textContent = computerScore;
-                }
+        // Atualiza a pontuação
+        if (winner === PLAYER) {
+            playerScore++;
+            playerScoreElement.textContent = playerScore;
+        } else {
+            computerScore++;
+            computerScoreElement.textContent = computerScore;
+        }                // Cria efeitos de celebração
+                createConfetti();
+                createStars();
+                
                 // Salva a pontuação no localStorage
                 saveScores();
-            }
-            // Mostra o modal de fim de jogo
-            winnerModal.classList.remove('opacity-0', 'pointer-events-none');
-        }
 
-        // Reinicia o jogo
-        function restartGame() {
-            gameActive = true;
-            currentPlayer = PLAYER;
-            boardState = Array(9).fill(null);
-            statusElement.textContent = 'Sua vez!';
-            createBoard();
-             // Esconde o modal de fim de jogo
-            winnerModal.classList.add('opacity-0', 'pointer-events-none');
-            winnerMessageElement.classList.remove('flex', 'items-center', 'justify-center');
-        }
+        // Efeitos de celebração
+        createConfetti();
+        createStars();
+    }
+    // Mostra o modal de fim de jogo
+    winnerModal.classList.remove('opacity-0', 'pointer-events-none');
+}
 
-        // Salva as pontuações no localStorage
-        function saveScores() {
-            localStorage.setItem('ticTacToeScores', JSON.stringify({
-                player: playerScore,
-                computer: computerScore
-            }));
-        }
+// Reinicia o jogo
+function restartGame() {
+    gameActive = true;
+    currentPlayer = PLAYER;
+    boardState = Array(9).fill(null);
+    statusElement.textContent = 'Sua vez!';
+    createBoard();
+     // Esconde o modal de fim de jogo
+    winnerModal.classList.add('opacity-0', 'pointer-events-none');
+    winnerMessageElement.classList.remove('flex', 'items-center', 'justify-center');
+}
 
-        // Carrega as pontuações do localStorage
-        function loadScores() {
-            const scores = JSON.parse(localStorage.getItem('ticTacToeScores'));
-            if (scores) {
-                playerScore = scores.player;
-                computerScore = scores.computer;
-                playerScoreElement.textContent = playerScore;
-                computerScoreElement.textContent = computerScore;
-            }
-        }
+// Salva as pontuações no localStorage
+function saveScores() {
+    localStorage.setItem('ticTacToeScores', JSON.stringify({
+        player: playerScore,
+        computer: computerScore
+    }));
+}
 
-        // Reinicia as pontuações
-        function resetScores() {
-            playerScore = 0;
-            computerScore = 0;
-            playerScoreElement.textContent = '0';
-            computerScoreElement.textContent = '0';
-            saveScores();
-        }
+// Carrega as pontuações do localStorage
+function loadScores() {
+    const scores = JSON.parse(localStorage.getItem('ticTacToeScores'));
+    if (scores) {
+        playerScore = scores.player;
+        computerScore = scores.computer;
+        playerScoreElement.textContent = playerScore;
+        computerScoreElement.textContent = computerScore;
+    }
+}
 
-        // --- Inicialização do Jogo ---
+// Reinicia as pontuações
+function resetScores() {
+    playerScore = 0;
+    computerScore = 0;
+    playerScoreElement.textContent = '0';
+    computerScoreElement.textContent = '0';
+    saveScores();
+}
 
-        restartButton.addEventListener('click', restartGame);
-        playAgainButton.addEventListener('click', restartGame);
-        resetScoresButton.addEventListener('click', resetScores);
-        // Adicionar um ouvinte de evento de tecla para a combinação Shift+R para resetar pontuações
-        document.addEventListener('keydown', function(event) {
-            if (event.shiftKey && event.key === 'R') {
-                resetScores();
-            }
-        });
-        
-        // Carrega as pontuações ao iniciar o jogo
-        loadScores();
-        createBoard();
+// --- Inicialização do Jogo ---
+
+restartButton.addEventListener('click', restartGame);
+playAgainButton.addEventListener('click', restartGame);
+resetScoresButton.addEventListener('click', resetScores);
+// Adicionar um ouvinte de evento de tecla para a combinação Shift+R para resetar pontuações
+document.addEventListener('keydown', function(event) {
+    if (event.shiftKey && event.key === 'R') {
+        resetScores();
+    }
+});
+
+// Carrega as pontuações ao iniciar o jogo
+loadScores();
+createBoard();

@@ -1,86 +1,251 @@
 body {
             font-family: 'Press Start 2P', cursive;
-            background-color: #fcd9f5;
+            background-color: #ffedf9;
             color: #a46a9a;
             -webkit-font-smoothing: none;
             -moz-osx-font-smoothing: grayscale;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" opacity="0.2"><path d="M30 10C26 10 26 18 30 18C34 18 34 10 30 10Z" fill="%23ffb8e6"/><path d="M30 10C26 10 26 18 30 18C34 18 34 10 30 10Z" fill="%23ffb8e6" transform="rotate(72 30 30)"/><path d="M30 10C26 10 26 18 30 18C34 18 34 10 30 10Z" fill="%23ffb8e6" transform="rotate(144 30 30)"/><path d="M30 10C26 10 26 18 30 18C34 18 34 10 30 10Z" fill="%23ffb8e6" transform="rotate(216 30 30)"/><path d="M30 10C26 10 26 18 30 18C34 18 34 10 30 10Z" fill="%23ffb8e6" transform="rotate(288 30 30)"/><circle cx="30" cy="30" r="3" fill="%23ffb8e6"/></svg>');
+            min-height: 100vh;
+            padding: 10px;
+            box-sizing: border-box;
         }
 
-        /* Efeito de borda pixelada */
+        /* Media query para ajustar fontes em telas menores */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+            
+            h1.status-message {
+                font-size: 1.5rem !important;
+                margin-bottom: 1rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 12px;
+                padding: 5px;
+            }
+            
+            h1.status-message {
+                font-size: 1.2rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            .restart-button {
+                padding: 8px 16px !important;
+                font-size: 0.8rem !important;
+            }
+        }
+
+        /* Efeito de borda pixelada kawaii */
         .pixel-border {
-            border: 8px solid #a46a9a;
+            border: 12px solid #ff9cd9;
+            border-radius: 16px;
             border-image-slice: 4;
             border-image-width: 4px;
             border-image-repeat: stretch;
-            border-image-source: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path d="M0 0h12v12H0z" fill="%23e6b5d9"/><path d="M4 0h4v4H4zM0 4h4v4H0zM8 4h4v4H8zM4 8h4v4H4z" fill="%23a46a9a"/></svg>');
+            border-image-source: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path d="M0 0h12v12H0z" fill="%23ffc8ed"/><path d="M4 0h4v4H4zM0 4h4v4H0zM8 4h4v4H8zM4 8h4v4H4z" fill="%23ff9cd9"/></svg>');
             position: relative;
-            background-color: #e6b5d9;
+            background-color: #ffd6f3;
             padding: 16px;
+            box-shadow: 0 8px 32px rgba(252, 186, 246, 0.4);
+            max-width: 100%;
+            box-sizing: border-box;
         }
         
+        /* Media query para ajustar o tabuleiro em telas pequenas */
+        @media (max-width: 480px) {
+            .pixel-border {
+                padding: 10px;
+                border-width: 8px;
+            }
+        }
+
         .game-board {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             gap: 8px;
             width: 100%;
-            height: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+            aspect-ratio: 1/1;
             background-color: #a46a9a;
         }
 
+        @media (max-width: 480px) {
+            .game-board {
+                gap: 4px;
+                max-width: 100%;
+            }
+        }
+
         .cell {
-            background-color: #f4c8e7;
+            background-color: #ffe0f7;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.3s;
             aspect-ratio: 1 / 1;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(255, 180, 240, 0.3) inset;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cell::before {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: #ffb4f0;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s;
+            top: 8px;
+            right: 8px;
+        }
+        
+        /* Adiciona um indicador fofo às células vazias */
+        .cell:not(.occupied):empty::after {
+            content: "♡";
+            position: absolute;
+            font-size: 20px;
+            color: #ffb8e6;
+            opacity: 0.2;
+            transform: rotate(10deg);
+            transition: all 0.3s ease;
         }
 
         .cell:hover:not(.occupied) {
-            background-color: #e6b5d9;
-        }
-
-        .cell.occupied {
-            cursor: not-allowed;
-        }
-
-        .cell .game-icon {
-            width: 70%;
-            height: 70%;
-            image-rendering: pixelated;
+            background-color: #ffc8ee;
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 4px 12px rgba(255, 180, 240, 0.5);
+            border: 2px solid #ff65c5;
         }
         
-        .score-icon {
-            image-rendering: pixelated;
         }
         
-        /* Estilo para a mensagem de status */
-        .status-message {
-            text-shadow: 2px 2px #e6b5d9;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.3); }
+        }
+        
+        #status {
+            position: relative;
+        }
+        
+        #status::before, #status::after {
+            content: '✧';
+            position: absolute;
+            top: 50%;
+            color: #ff8ad8;
+            opacity: 0.6;
+        }
+        
+        #status::before {
+            left: -1.5em;
+        }
+        
+        #status::after {
+            right: -1.5em;
         }
 
-        /* Estilo para o botão */
+        /* Estilo para o botão kawaii */
         .restart-button {
-            background-color: #a46a9a;
+            background-color: #ff8ad8;
             color: white;
             padding: 12px 24px;
-            border: 4px solid #7c4c74;
-            box-shadow: 4px 4px 0 #7c4c74;
-            transition: all 0.1s ease-in-out;
+            border: 3px solid #ff6ec7;
+            border-radius: 30px;
+            box-shadow: 0 6px 0 #ff45b5, 0 8px 10px rgba(255, 138, 216, 0.3);
+            transition: all 0.2s ease-in-out;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .restart-button::after {
+            content: '';
+            position: absolute;
+            height: 40%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background: linear-gradient(rgba(255, 255, 255, 0.3), transparent);
+            border-radius: 30px 30px 100px 100px;
+        }
+        
         .restart-button:hover {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0 #7c4c74;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #ff45b5, 0 12px 16px rgba(255, 138, 216, 0.5);
         }
+        
         .restart-button:active {
-            transform: translate(4px, 4px);
-            box-shadow: none;
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #ff45b5, 0 4px 6px rgba(255, 138, 216, 0.3);
         }
 
-        /* Esconde a mensagem de vitória inicialmente */
+        /* Modal de vitória kawaii */
         #winner-modal {
-            transition: opacity 0.3s ease-in-out;
+            transition: all 0.5s ease-in-out;
+            z-index: 1000;
+        }
+        
+        .trophy {
+            animation: bounce 2s infinite ease-in-out;
+            transform-origin: center bottom;
+            display: inline-block;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+        
+        .confetti-container {
+            z-index: -1;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--color);
+            opacity: 0.7;
+            z-index: -1;
+        }
+        
+        .stars-container {
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            opacity: 0.6;
+            animation: twinkle 1.5s infinite alternate;
+        }
+        
+        .star::before {
+            content: '✦';
+            font-size: 20px;
+            color: #ffb700;
+            text-shadow: 0 0 5px #ffb700;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(500px) rotate(720deg);
+                opacity: 0;
+            }
         }

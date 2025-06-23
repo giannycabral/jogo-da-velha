@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="icon" href="./images/favicon.svg" type="image/svg+xml">
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4">
 
@@ -19,7 +20,7 @@
     <div class="flex justify-center items-center mb-6 w-full max-w-sm">
         <div class="flex-1 text-center">
             <div class="flex justify-center mb-2">
-                <img src="./images/cat.gif" alt="Gato" class="score-icon" width="48" height="48">
+                <img src="./images/cat.gif" alt="Gato" class="score-icon" width="80" height="80">
             </div>
             <p class="text-lg status-message">Você</p>
             <p id="player-score" class="text-2xl status-message">0</p>
@@ -27,7 +28,7 @@
         <div class="px-4 text-2xl">vs</div>
         <div class="flex-1 text-center">
             <div class="flex justify-center mb-2">
-                <img src="./images/rabbit.gif" alt="Coelho" class="score-icon" width="48" height="48">
+                <img src="./images/rabbit.gif" alt="Coelho" class="score-icon" width="80" height="80">
             </div>
             <p class="text-lg status-message">Coelho</p>
             <p id="computer-score" class="text-2xl status-message">0</p>
@@ -52,8 +53,13 @@
 
     <!-- Modal de Fim de Jogo -->
     <div id="winner-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 pointer-events-none">
-        <div class="pixel-border text-center p-8 bg-[#fcd9f5]">
+        <div class="pixel-border text-center p-8 bg-[#fcd9f5] relative">
+            <div class="confetti-container absolute inset-0 overflow-hidden" id="confetti-container"></div>
+            <div class="stars-container absolute -top-8 -left-8 -right-8 -bottom-8 overflow-hidden pointer-events-none"></div>
             <h2 id="winner-message" class="text-3xl md:text-4xl mb-6 status-message"></h2>
+            <div class="trophy mb-6">
+                <span class="text-5xl">🏆</span>
+            </div>
             <button id="play-again-button" class="restart-button text-xl">Jogar Novamente</button>
         </div>
     </div>
