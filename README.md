@@ -158,11 +158,22 @@ O jogo foi testado e é compatível com:
 
 ## Licença
 
-Este projeto é distribuído sob a licença MIT. Sinta-se livre para usar, modificar e distribuir conforme as regras da licença.
+Este projeto é distribuído sob a [licença MIT](LICENSE). Sinta-se livre para usar, modificar e distribuir conforme as regras da licença.
+
+```
+MIT License
+
+Copyright (c) 2025 Regiane Cabral
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files...
+```
+
+Veja o arquivo [LICENSE](LICENSE) completo para mais detalhes.
 
 ## Autor
 
-Desenvolvido com 💖 e criatividade por Kawaii Games Studio.
+Desenvolvido com 💖 e criatividade por Regiane Cabral.
 
 ---
 
